@@ -1,0 +1,68 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 766 >>
+stream
+BT
+/F1 16 Tf
+50 740 Td
+(Guia de Boas-Vindas) Tj
+/F1 11 Tf
+0 -30 Td
+() Tj
+0 -18 Td
+(Lorem ipsum dolor sit amet, consectetur adipiscing elit.) Tj
+0 -18 Td
+(Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.) Tj
+0 -18 Td
+(Ut enim ad minim veniam, quis nostrud exercitation.) Tj
+0 -18 Td
+() Tj
+0 -18 Td
+(Bem-vinda ao programa Victus!) Tj
+0 -18 Td
+() Tj
+0 -18 Td
+(Este guia vai ajudar-te nos primeiros passos da tua jornada.) Tj
+0 -18 Td
+(Segue as instrucoes e aproveita ao maximo cada aula.) Tj
+0 -18 Td
+() Tj
+0 -18 Td
+(Dicas importantes:) Tj
+0 -18 Td
+(- Assiste a cada video com atencao) Tj
+0 -18 Td
+(- Toma notas durante as aulas) Tj
+0 -18 Td
+(- Pratica os exercicios diariamente) Tj
+0 -18 Td
+(- Partilha as tuas duvidas nos comentarios) Tj
+0 -18 Td
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000001058 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1128
+%%EOF
