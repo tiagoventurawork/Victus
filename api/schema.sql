@@ -1,0 +1,170 @@
+CREATE DATABASE IF NOT EXISTS victus_db
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE victus_db;
+
+-- USERS
+CREATE TABLE IF NOT EXISTS users (
+  id            INT AUTO_INCREMENT PRIMARY KEY,
+  name          VARCHAR(120) NOT NULL,
+  email         VARCHAR(180) NOT NULL UNIQUE,
+  password      VARCHAR(255) NOT NULL,
+  avatar        VARCHAR(255) DEFAULT NULL,
+  phone         VARCHAR(20)  DEFAULT NULL,
+  birth_date    DATE         DEFAULT NULL,
+  weight_lost   DECIMAL(5,2) DEFAULT 0,
+  created_at    DATETIME     DEFAULT CURRENT_TIMESTAMP,
+  updated_at    DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- PASSWORD RESETS
+CREATE TABLE IF NOT EXISTS password_resets (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  user_id    INT NOT NULL,
+  token      VARCHAR(255) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  used       TINYINT(1) DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- BANNERS
+CREATE TABLE IF NOT EXISTS banners (
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  title       VARCHAR(200) NOT NULL,
+  subtitle    VARCHAR(255) DEFAULT NULL,
+  button_text VARCHAR(80)  DEFAULT NULL,
+  button_url  VARCHAR(255) DEFAULT NULL,
+  image_url   VARCHAR(255) DEFAULT NULL,
+  sort_order  INT DEFAULT 0,
+  active      TINYINT(1) DEFAULT 1,
+  created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- REMINDERS
+CREATE TABLE IF NOT EXISTS reminders (
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  message     TEXT NOT NULL,
+  show_date   DATE NOT NULL,
+  active      TINYINT(1) DEFAULT 1,
+  created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- EVENTS
+CREATE TABLE IF NOT EXISTS events (
+  id            INT AUTO_INCREMENT PRIMARY KEY,
+  title         VARCHAR(200) NOT NULL,
+  description   TEXT,
+  event_type    VARCHAR(50) DEFAULT 'Masterclass',
+  event_date    DATETIME NOT NULL,
+  location      VARCHAR(255) DEFAULT NULL,
+  meeting_link  VARCHAR(255) DEFAULT NULL,
+  image_url     VARCHAR(255) DEFAULT NULL,
+  created_at    DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- PLAYLISTS
+CREATE TABLE IF NOT EXISTS playlists (
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  title       VARCHAR(200) NOT NULL,
+  description VARCHAR(500) DEFAULT NULL,
+  cover_url   VARCHAR(255) DEFAULT NULL,
+  sort_order  INT DEFAULT 0,
+  created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- LESSONS
+CREATE TABLE IF NOT EXISTS lessons (
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  playlist_id INT NOT NULL,
+  title       VARCHAR(200) NOT NULL,
+  sort_order  INT DEFAULT 0,
+  is_free     TINYINT(1) DEFAULT 0,
+  created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (playlist_id) REFERENCES playlists(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- VIDEOS
+CREATE TABLE IF NOT EXISTS videos (
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  lesson_id   INT NOT NULL,
+  title       VARCHAR(200) NOT NULL,
+  description TEXT,
+  video_url   VARCHAR(500) NOT NULL,
+  thumbnail   VARCHAR(255) DEFAULT NULL,
+  duration    INT DEFAULT 0 COMMENT 'duration in seconds',
+  sort_order  INT DEFAULT 0,
+  created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- VIDEO PROGRESS
+CREATE TABLE IF NOT EXISTS video_progress (
+  id              INT AUTO_INCREMENT PRIMARY KEY,
+  user_id         INT NOT NULL,
+  video_id        INT NOT NULL,
+  current_seconds INT DEFAULT 0,
+  total_seconds   INT DEFAULT 0,
+  percentage      DECIMAL(5,2) DEFAULT 0,
+  updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_user_video (user_id, video_id),
+  FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE,
+  FOREIGN KEY (video_id) REFERENCES videos(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- FAVORITES
+CREATE TABLE IF NOT EXISTS favorites (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  user_id    INT NOT NULL,
+  video_id   INT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_fav (user_id, video_id),
+  FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE,
+  FOREIGN KEY (video_id) REFERENCES videos(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- COMPLETED
+CREATE TABLE IF NOT EXISTS completed (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  user_id    INT NOT NULL,
+  video_id   INT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_compl (user_id, video_id),
+  FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE,
+  FOREIGN KEY (video_id) REFERENCES videos(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- NOTES
+CREATE TABLE IF NOT EXISTS notes (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  user_id    INT NOT NULL,
+  video_id   INT NOT NULL,
+  content    TEXT NOT NULL,
+  timestamp  INT DEFAULT 0 COMMENT 'video second when note was taken',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE,
+  FOREIGN KEY (video_id) REFERENCES videos(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- COMMENTS
+CREATE TABLE IF NOT EXISTS comments (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  user_id    INT NOT NULL,
+  video_id   INT NOT NULL,
+  content    TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE,
+  FOREIGN KEY (video_id) REFERENCES videos(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- MATERIALS
+CREATE TABLE IF NOT EXISTS materials (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  video_id   INT NOT NULL,
+  title      VARCHAR(200) NOT NULL,
+  file_url   VARCHAR(500) NOT NULL,
+  file_type  VARCHAR(50) DEFAULT 'pdf',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (video_id) REFERENCES videos(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
